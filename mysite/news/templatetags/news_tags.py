@@ -6,3 +6,8 @@ register = template.Library()
 @register.simple_tag(name='get_list_categories')
 def get_categories():
     return Category.objects.all()
+
+@register.inclusion_tag('news/list_categories.html')
+def show_categories():  #можно передать агрументы этой функции
+    categories = Category.objects.all()
+    return {'categories': categories}
