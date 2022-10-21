@@ -9,7 +9,7 @@
         {% block content %}
             {% for item in news %}
             <div class="card mb-3">
-                <h5 class="card-header"> <a href="{% url 'category' item.category.pk %}">Категория: {{ item.category.title }}</a></h5> <!-- тут идет обращение к итерируему объекту, после к полю ньюс и после к полю категории -->
+                <h5 class="card-header"> <a href="{{ item.category.get_absolute_url }}">Категория: {{ item.category.title }}</a></h5> <!-- тут идет обращение к итерируему объекту, после к полю ньюс и после к полю категории -->
                 <div class="card-body">
                     <div class="media">
                         {% if item.photo%}
@@ -19,8 +19,8 @@
                         {% endif %}
                         <div class="media-body">
                           <h5 class="card-title">{{ item.title }}</h5>
-                          <p class="card-text">{{ item.content }}</p>
-                          <a href="#" class="btn btn-primary">Read more...</a>
+                          <p class="card-text">{{ item.content|safe|linebreaks|truncatewords:40 }}</p>
+                          <a href="{{ item.get_absolute_url }}" class="btn btn-primary">Read more...</a>
                         </div>
                     </div>
 
