@@ -7,7 +7,7 @@
 {% block sidebar %}
 {% include 'inc/_sidebar.html' %}
 {% endblock %}
-        <dib>
+
         {% block content %}
             <div class="card mb-3">
                 <h5 class="card-header"> <a href="{{ news_item.category.get_absolute_url }}">Категория: {{ news_item.category.title }}</a></h5> <!-- тут идет обращение к итерируему объекту, после к полю ньюс и после к полю категории -->
@@ -29,7 +29,7 @@
                     {{ news_item.created_at|date:"d-m-Y H:i:s" }}
                 </div>
             </div>
-            </dib>
+
 {% endblock %}
 
 
