@@ -26,9 +26,12 @@ def add_news(request):
     if request.method == "POST":
         form = NewsForm(request.POST)
         if form.is_valid():
-            #print(form.cleaned_data)
-            news = News.objects.create(**form.cleaned_data) #распаковка словарей**.
-            return redirect(news)   #это редирект на только что созданную новость
+            news = form.save()
+            #не связанная с моделью форма. логика сохраненния
+            #print(form.cleaned_data) сюда попадает словарь из формы и его можно посмотреть. данные в него попадают после валидации
+            #news = News.objects.create(**form.cleaned_data) #распаковка словарей**.
+            #return redirect(news)   #это редирект на только что созданную новость
+            return redirect(news)
     else:
         form = NewsForm()
     return render(request, 'news/add_news.html', {'form': form})
