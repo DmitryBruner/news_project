@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %} {{ title }} ::{{ block.super }}{% endblock %}
+
+{% block sidebar %}
+{% include 'inc/_sidebar.html' %}
+{% endblock %}
+        <dib>
+        {% block content %}
+            {% for item in news %}
+            <div class="card mb-3">
+                <h5 class="card-header"> <a href="{{ item.category.get_absolute_url }}">Категория: {{ item.category.title }}</a></h5> <!-- тут идет обращение к итерируему объекту, после к полю ньюс и после к полю категории -->
+                <div class="card-body">
+                    <div class="media">
+                        {% if item.photo%}
+                        <img src="{{ item.photo.url }}" alt="" width="350" height="233">
+                        {% else %}
+                        <img src="../../../media/photos/2022/10/16/icon19.jpg" alt="" width="350">
+                        {% endif %}
+                        <div class="media-body">
+                          <h5 class="card-title">{{ item.title }}</h5>
+                          <p class="card-text">{{ item.content|safe|linebreaks|truncatewords:40 }}</p>
+                          <a href="{{ item.get_absolute_url }}" class="btn btn-primary">Read more...</a>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="card-footer text-muted">
+                    {{ item.created_at|date:"d-m-Y H:i:s" }}
+                </div>
+            </div>
+            {% endfor %}
+            </dib>
+{% endblock %}
+
+

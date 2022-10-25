@@ -1,21 +1,48 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.views.generic import ListView
+
 from .models import News, Category
 from .forms import NewsForm
 
+#class HomeNews(ListView):
+#    model = News   эта конструкция выводит то же что и функция index для выводв в шаблоне нужно использовать object_list
 
-def index(request):
-    news = News.objects.order_by('-created_at')
-    context = {'news': news,
-               'title': 'Список новостей'
-               }
-    return render(request, 'news/index.html', context)
+class HomeNews(ListView):
+    model = News
+    template_name = 'news/home_news_list.html' #переопределение шаблона по умолчанию
+    context_object_name = 'news' #переопределение базового списка для вывода в свой класс
+    #extra_context = {'title': 'Главная'} #используется только для статичных данных
 
-def get_category(request, category_id):
-    news = News.objects.filter(category_id=category_id)
-    category = Category.objects.get(pk=category_id)
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs) #наследовали атрибуты от шаблона
+        context['title'] = 'Главная страница' #переопределили title
+        return context
 
-    return render(request, 'news/category.html', {'news': news,
-                                                  'category': category})
+    def get_queryset(self):
+        return News.objects.filter(is_published=True) #фильтр по опубликовано
+# def index(request):
+#     news = News.objects.order_by('-created_at')
+#     context = {'news': news,
+#                'title': 'Список новостей'
+#                }
+#     return render(request, 'news/index.html', context)
+class HewsByCategory(ListView):
+    model = News
+    template_name = 'news/home_news_list.html' #переопределение шаблона по умолчанию
+    context_object_name = 'news' #переопределение базового списка для вывода в свой класс
+    allow_empty = False #неразрешаем показ пустых списокв вместо 500 ошибка будет 404
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs) #наследовали атрибуты от шаблона
+        context['title'] = Category.objects.get(pk=self.kwargs['category_id']) #переопределили title для каждой категории
+        return context
+
+    def get_queryset(self):
+
+        return News.objects.filter(category_id=self.kwargs['category_id'], is_published=True) #фильтр по опубликовано
+
+
+
 
 def view_news(request, news_id):
     #news_item = News.objects.get(pk=news_id)
