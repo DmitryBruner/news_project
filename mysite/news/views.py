@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView
 
 from .models import News, Category
 from .forms import NewsForm
@@ -60,23 +60,33 @@ class ViewNews(DetailView):
     #pk_url_kwarg = 'news_id'  указание откуда брать id
     context_object_name = 'news_item'
 
+class CreateNews(CreateView):
+    """Добавление новости"""
+    form_class = NewsForm
+    template_name = 'news/add_news.html'
+    #если в моделе прописан метод гет абсолюте юрл то будет редирект на только что созданный объект
 
-def view_news(request, news_id):
-    """Вывод отдельной новости"""
-    news_item = get_object_or_404(News, pk=news_id)
-    #news_item = News.objects.get(pk=news_id)
-    return render(request, 'news/view_news.html', {'news_item': news_item})
 
-def add_news(request):
-    if request.method == "POST":
-        form = NewsForm(request.POST)
-        if form.is_valid():
-            news = form.save()
-            #не связанная с моделью форма. логика сохраненния
-            #print(form.cleaned_data) сюда попадает словарь из формы и его можно посмотреть. данные в него попадают после валидации
-            #news = News.objects.create(**form.cleaned_data) #распаковка словарей**.
-            #return redirect(news)   #это редирект на только что созданную новость
-            return redirect(news)
-    else:
-        form = NewsForm()
-    return render(request, 'news/add_news.html', {'form': form})
+
+
+# def view_news(request, news_id):
+#     """Вывод отдельной новости"""
+#     news_item = get_object_or_404(News, pk=news_id)
+#     #news_item = News.objects.get(pk=news_id)
+#     return render(request, 'news/view_news.html', {'news_item': news_item})
+
+
+# def add_news(request):
+#       """Добавление новости"""
+#     if request.method == "POST":
+#         form = NewsForm(request.POST)
+#         if form.is_valid():
+#             news = form.save()
+#             #не связанная с моделью форма. логика сохраненния
+#             #print(form.cleaned_data) сюда попадает словарь из формы и его можно посмотреть. данные в него попадают после валидации
+#             #news = News.objects.create(**form.cleaned_data) #распаковка словарей**.
+#             #return redirect(news)   #это редирект на только что созданную новость
+#             return redirect(news)
+#     else:
+#         form = NewsForm()
+#     return render(request, 'news/add_news.html', {'form': form})
