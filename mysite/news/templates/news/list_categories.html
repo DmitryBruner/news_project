@@ -1,6 +1,9 @@
  <div class="list-group">
      {% for item_category in categories %}
-     <a href="{{ item.get_absolute_url }}" class="list-group-item list-group-item-action active" aria-current="true">{{ item_category.title }}</a>
+     <a href="{{ item.get_absolute_url }}" class="list-group-item list-group-item-action active" aria-current="true">{{ item_category.title }}
+
+     </a>
+     <!-- НЕЗНАЮ ПОЧЕМУ НО НЕ ВЫВОДИТ КОЛ_ВО НОВОСТЕЙ<span class="badge text-bg-secondary">{{ item.cnt }}</span>-->
      {% endfor %}
  </div>
 
