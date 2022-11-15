@@ -1,12 +1,13 @@
 {% load news_tags %} <!--#симплтэг использование-->
  <div class="list-group">
-     {% get_list_categories as categories %}
+
+    <!-- {% get_list_categories as categories %}
      {% for item_category in categories %}
      <a href="{% url 'category' item_category.pk %}" class="list-group-item list-group-item-action active" aria-current="true">{{ item_category.title }}</a>
-     {% endfor %}
+
+     {% endfor %}   ЕСЛИ БУДУ ВОЗВРАЩАТЬ СИМПЛ ТЕГ ВМЕСТО ИНКЛЮЖЕН ТО НАДО ОБЯЗАТЕЛЬНО ПОМЕНЯТЬ ИТЕРИРУЕМЫЙ ОБЪЕКТ НА item_category  -->
  </div>
 
 
 <br>
-
-<!--  тут фигурная скобка% show_categories %тут фигурная скобка инклюженс тег использование  -->
+   {% show_categories %}

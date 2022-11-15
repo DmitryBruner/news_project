@@ -5,10 +5,18 @@ from .models import News, Category
 from .forms import NewsForm
 from .util import MyMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
-
+from django.core.paginator import Paginator
 #class HomeNews(ListView):
 #    model = News   эта конструкция выводит то же что и функция index для выводв в шаблоне нужно использовать object_list
 
+
+# def test(request):
+#    """ это постраничная пагинация для функций те без классов"""
+#     objects = ['1', '2', '3', '4', '5', '6', '7', ]
+#     paginator = Paginator(objects, 2)
+#     page_num = request.GET.get('page', 1)
+#     page_objects = paginator.get_page(page_num)
+#     return render(request, 'news/test.html', {'page_obj': page_objects})
 class HomeNews(MyMixin, ListView):
     """Вывод главной страницы сайта"""
     model = News
@@ -16,7 +24,8 @@ class HomeNews(MyMixin, ListView):
     context_object_name = 'news' #переопределение базового списка для вывода в свой класс (дефолтный объект)
     #extra_context = {'title': 'Главная'} #используется только для статичных данных
     queryset = News.objects.select_related('category')
-    mixin_prop = 'hello world'
+    #mixin_prop = 'hello world' # пример использования миксинов
+    paginate_by = 2
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs) #наследовали атрибуты от шаблона
         context['title'] = self.get_upper('Главная страница') #переопределили title
@@ -34,9 +43,10 @@ class HomeNews(MyMixin, ListView):
 class HewsByCategory(ListView):
     """Вывод страницы по категории"""
     model = News
-    template_name = 'news/home_news_list.html' #переопределение шаблона по умолчанию
+    template_name = 'news/category.html' #переопределение шаблона по умолчанию
     context_object_name = 'news' #переопределение базового списка для вывода в свой класс (дефолтный объект)
     allow_empty = False #неразрешаем показ пустых списокв вместо 500 ошибка будет 404
+    paginate_by = 2
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs) #наследовали атрибуты от шаблона

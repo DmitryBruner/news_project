@@ -9,7 +9,8 @@
 {% block content %}
              <div>
             {% for item in news %}
-            <div class="card mb-3">
+
+                 <div class="card mb-3">
                 <h5 class="card-header">Категория: {{ item.category.title }}</h5> <!-- тут идет обращение к итерируему объекту, после к полю ньюс и после к полю категории -->
                 <div class="card-body">
                     <div class="media">
@@ -22,6 +23,7 @@
                           <h5 class="card-title">{{ item.title }}</h5>
                           <p class="card-text">{{ item.content|safe|linebreaks|truncatewords:40 }}</p>
                           <a href="{{ item.get_absolute_url }}" class="btn btn-primary">Read more...</a>
+
                         </div>
                     </div>
 
