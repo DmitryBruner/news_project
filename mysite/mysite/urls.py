@@ -22,6 +22,7 @@ from mysite import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('news.urls')),
+    path('__debug__/', include('debug_toolbar.urls')), #дебагтулбар
 #    path('test/', views.test, name='Test'),
 
 ]

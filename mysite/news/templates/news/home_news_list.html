@@ -7,6 +7,7 @@
 {% endblock %}
         <dib>
         {% block content %}
+            {{ mixin_prop }}
             {% for item in news %}
             <div class="card mb-3">
                 <h5 class="card-header"> <a href="{{ item.category.get_absolute_url }}">Категория: {{ item.category.title }}</a></h5> <!-- тут идет обращение к итерируему объекту, после к полю ньюс и после к полю категории -->

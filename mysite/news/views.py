@@ -3,25 +3,29 @@ from django.views.generic import ListView, DetailView, CreateView
 
 from .models import News, Category
 from .forms import NewsForm
+from .util import MyMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 #class HomeNews(ListView):
 #    model = News   эта конструкция выводит то же что и функция index для выводв в шаблоне нужно использовать object_list
 
-class HomeNews(ListView):
+class HomeNews(MyMixin, ListView):
     """Вывод главной страницы сайта"""
     model = News
     template_name = 'news/home_news_list.html' #переопределение шаблона по умолчанию
     context_object_name = 'news' #переопределение базового списка для вывода в свой класс (дефолтный объект)
     #extra_context = {'title': 'Главная'} #используется только для статичных данных
-
+    queryset = News.objects.select_related('category')
+    mixin_prop = 'hello world'
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs) #наследовали атрибуты от шаблона
-        context['title'] = 'Главная страница' #переопределили title
+        context['title'] = self.get_upper('Главная страница') #переопределили title
+        context['mixin_prop'] = self.get_prop()
         return context
 
-    def get_queryset(self):
-        return News.objects.filter(is_published=True) #фильтр по опубликовано
-# def index(request):
+#     def get_queryset(self):
+#         return News.objects.filter(is_published=True).select_related('category') #фильтр по опубликовано также использование жадных sql запросов (грубо говоря джоиним единичные запросы)
+#  def index(request):
 #     news = News.objects.order_by('-created_at')
 #     context = {'news': news,
 #                'title': 'Список новостей'
@@ -41,7 +45,7 @@ class HewsByCategory(ListView):
 
     def get_queryset(self):
 
-        return News.objects.filter(category_id=self.kwargs['category_id'], is_published=True) #фильтр по опубликовано
+        return News.objects.filter(category_id=self.kwargs['category_id'], is_published=True).select_related('category') #фильтр по опубликовано также использование жадных sql запросов (грубо говоря джоиним единичные запросы)
 
 
 # def get_category(request, category_id):
@@ -60,12 +64,13 @@ class ViewNews(DetailView):
     #pk_url_kwarg = 'news_id'  указание откуда брать id
     context_object_name = 'news_item'
 
-class CreateNews(CreateView):
+
+class CreateNews(LoginRequiredMixin, CreateView):
     """Добавление новости"""
     form_class = NewsForm
     template_name = 'news/add_news.html'
     #если в моделе прописан метод гет абсолюте юрл то будет редирект на только что созданный объект
-
+    login_url = '/admin/' #перенаправляет на форму регистрации если незареганный пользователь пытается зайти на страницу ему недоступную по прямой ссылке можно вместо этого просто не давать доступ к странице
 
 
 
