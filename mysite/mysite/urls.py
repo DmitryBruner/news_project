@@ -24,6 +24,8 @@ urlpatterns = [
     path('', include('news.urls')),
     path('__debug__/', include('debug_toolbar.urls')), #дебагтулбар
 #    path('test/', views.test, name='Test'),
+    path('ckeditor/', include('ckeditor_uploader.urls')),
+
 
 ]
 

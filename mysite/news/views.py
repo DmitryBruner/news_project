@@ -3,28 +3,40 @@ from django.views.generic import ListView, DetailView, CreateView
 
 from django.contrib import messages
 
+from django.core.mail import send_mail
 from .models import News, Category
-from .forms import NewsForm, UserRegisterForm
+from .forms import NewsForm, UserRegisterForm, UserLoginForm, ContactForm
 from .util import MyMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import login, logout
 from django.core.paginator import Paginator
 #class HomeNews(ListView):
 #    model = News   эта конструкция выводит то же что и функция index для выводв в шаблоне нужно использовать object_list
 
 
-# def test(request):
-#    """ это постраничная пагинация для функций те без классов"""
-#     objects = ['1', '2', '3', '4', '5', '6', '7', ]
-#     paginator = Paginator(objects, 2)
-#     page_num = request.GET.get('page', 1)
-#     page_objects = paginator.get_page(page_num)
-#     return render(request, 'news/test.html', {'page_obj': page_objects})
+def my_mail_send(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            mail = send_mail(form.cleaned_data['subject'], form.cleaned_data['content'], 'bruner.expert@yandex.ru', ['bruner.expert@gmail.com'], fail_silently=True) #если в фолс то выдается ошибка в коде если тру то ошибка общая для юзера fail_silently=True
+            if mail:
+                messages.success(request, 'Пимьмо успешно отправлено!')
+                return redirect('test')
+            else:
+                messages.error(request, 'Ошибка отправки')
+        else:
+            messages.error(request, 'Ошибка регистрации!')
+    else:
+        form = ContactForm()
+
+    return render(request, 'news/test.html', {'form': form})
 
 def register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save()
+            login(request, user)
             messages.success(request, 'Вы успешно зарегистрировались!')
             return redirect('login')
         else:
@@ -32,8 +44,21 @@ def register(request):
     else:
         form = UserRegisterForm()
     return render(request, 'news/register.html', {'form': form})
-def login(request):
-    return render(request, 'news/login.html')
+def user_login(request):
+    if request.method == 'POST':
+        form = UserLoginForm(data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('home')
+    else:
+        form = UserLoginForm()
+    return render(request, 'news/login.html', {'form': form})
+
+def user_logout(request):
+    logout(request)
+    return redirect('login')
+
 
 class HomeNews(MyMixin, ListView):
     """Вывод главной страницы сайта"""
