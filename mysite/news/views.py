@@ -21,15 +21,15 @@ def my_mail_send(request):
             mail = send_mail(form.cleaned_data['subject'], form.cleaned_data['content'], 'bruner.expert@yandex.ru', ['bruner.expert@gmail.com'], fail_silently=True) #если в фолс то выдается ошибка в коде если тру то ошибка общая для юзера fail_silently=True
             if mail:
                 messages.success(request, 'Пимьмо успешно отправлено!')
-                return redirect('test')
+                return redirect('contacts')
             else:
                 messages.error(request, 'Ошибка отправки')
         else:
-            messages.error(request, 'Ошибка регистрации!')
+            messages.error(request, 'Ошибка валидации!')
     else:
         form = ContactForm()
 
-    return render(request, 'news/test.html', {'form': form})
+    return render(request, 'news/contacts.html', {'form': form})
 
 def register(request):
     if request.method == 'POST':
